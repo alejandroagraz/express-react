@@ -11,6 +11,6 @@ COPY package*.json ./
 RUN yarn install
 COPY . .
 
-EXPOSE 4200
+EXPOSE 3900
 CMD ["yarn", "run", "start", "dev"]
 

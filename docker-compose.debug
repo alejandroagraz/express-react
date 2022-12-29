@@ -13,7 +13,7 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
       command: mongod--auth
     networks:
-      - shopify
+      - test
 
   mongo-seed:
     build:
@@ -25,71 +25,42 @@ services:
         DATABASE: ${MONG_PASSWORD}
     image: mongo-seed
     networks:
-      - shopify
+      - test
     depends_on:
       - database
 
-  api-client:
-    build:
-      context: ./projects/client-shopify-express
-      dockerfile: Dockerfile
-    env_file: .env
-    container_name: ${PROJECTNAME_EXPRESS}-${JOB_BASE_NAME}
-    image: server/${PROJECTNAME_EXPRESS}
-    ports:
-      - "${PORT_LOCAL_EXPRESS}:${PORT_LOCAL_EXPRESS}"
-    volumes:
-      - ./projects/client-shopify-express:/app
-    networks:
-      - shopify
-    depends_on:
-      - mongo-seed
-
-  ngrok:
-    image: ngrok/ngrok
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_TOKEN}
-    command: "http api-client:${PORT_LOCAL_EXPRESS}"
-    ports:
-      - "${PORT_NGROK}:${PORT_NGROK}"
-    networks:
-      - shopify
-    depends_on:
-      - api-client
-
   app-server:
     build:
-      context: ./projects/backend-nest
+      context: ./projects/backend
       dockerfile: Dockerfile
     env_file: .env
-    container_name: ${PROJECTNAME_NEST}-${JOB_BASE_NAME}
-    image: server/${PROJECTNAME_NEST}
+    container_name: ${PROJECTNAME_BACKEND}-${JOB_BASE_NAME}
+    image: server/${PROJECTNAME_BACKEND}
     ports:
-      - "${PORT_LOCAL_NEST}:${PORT_LOCAL_NEST}"
+      - "${PORT_LOCAL_BACKEND}:${PORT_LOCAL_BACKEND}"
     volumes:
-      - ./projects/backend-nest:/usr/src/app
+      - ./projects/backend:/app
     networks:
-      - shopify
+      - test
     depends_on:
       - mongo-seed
-      - api-client
 
   app-client:
     build:
-      context: ./projects/frontend-react
+      context: ./projects/frontend
       dockerfile: Dockerfile
     env_file: .env
     container_name: ${PROJECTNAME_FRONTEND}-${JOB_BASE_NAME}
-    image: server/${PROJECTNAME_FRONTEND}
+    image: client/${PROJECTNAME_FRONTEND}
     ports:
       - "${PORT_LOCAL_FRONTEND}:80"
     volumes:
-      - ./projects/frontend-react:/usr/src/app
+      - ./projects/frontend:/usr/src/app
     networks:
-      - shopify
+      - test
     depends_on:
       - app-server
 
 networks:
-  shopify:
+  test:
     external: true

@@ -51,7 +51,7 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     container_name: ${PROJECTNAME_FRONTEND}-${JOB_BASE_NAME}
-    image: server/${PROJECTNAME_FRONTEND}
+    image: client/${PROJECTNAME_FRONTEND}
     ports:
       - "${PORT_LOCAL_FRONTEND}:80"
     volumes:
