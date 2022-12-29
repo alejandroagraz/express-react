@@ -1,0 +1,66 @@
+version: '3.7'
+
+services:
+  database:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "${PORT_BD}:${PORT_BD}"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONG_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      command: mongod--auth
+    networks:
+      - test
+
+  mongo-seed:
+    build:
+      context: ./docker-files/mongo
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${MONGO_USERNAME}
+        PASSWORD: ${MONG_PASSWORD}
+        DATABASE: ${MONG_PASSWORD}
+    image: mongo-seed
+    networks:
+      - test
+    depends_on:
+      - database
+
+  app-server:
+    build:
+      context: ./projects/backend
+      dockerfile: Dockerfile
+    env_file: .env
+    container_name: ${PROJECTNAME_BACKEND}-${JOB_BASE_NAME}
+    image: server/${PROJECTNAME_BACKEND}
+    ports:
+      - "${PORT_LOCAL_BACKEND}:${PORT_LOCAL_BACKEND}"
+    volumes:
+      - ./projects/backend:/app
+    networks:
+      - test
+    depends_on:
+      - mongo-seed
+
+  app-client:
+    build:
+      context: ./projects/frontend
+      dockerfile: Dockerfile
+    env_file: .env
+    container_name: ${PROJECTNAME_FRONTEND}-${JOB_BASE_NAME}
+    image: server/${PROJECTNAME_FRONTEND}
+    ports:
+      - "${PORT_LOCAL_FRONTEND}:80"
+    volumes:
+      - ./projects/frontend:/usr/src/app
+    networks:
+      - test
+    depends_on:
+      - app-server
+
+networks:
+  test:
+    external: true
