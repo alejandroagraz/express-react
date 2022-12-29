@@ -25,10 +25,10 @@ function Files() {
                                         file.lines.length > 0 ? (
                                             file.lines.map((line) => (
                                                 <tr>
-                                                    <td>{ file.file }</td>
-                                                    <td> {line.text} </td>
-                                                    <td>{line.number}</td>
-                                                    <td>{line.hex}</td>
+                                                    <td>{ file.file !== null ? (file.file) : ( <span>Undefined</span> ) }</td>
+                                                    <td>{ line.text !== null ? (line.text) : ( <span>Undefined</span> ) }</td>
+                                                    <td>{ line.number !== null ? (line.number) : ( <span>Undefined</span> ) }</td>
+                                                    <td>{ line.hex !== null ? (line.hex) : ( <span>Undefined</span> ) }</td>
                                                 </tr>
                                             ))
                                         ) : (
@@ -42,10 +42,10 @@ function Files() {
                                     file[0].lines.length > 0 && (
                                         file[0].lines.map((line) => (
                                             <tr>
-                                                <td>{ file[0].file }</td>
-                                                <td> {line.text} </td>
-                                                <td>{line.number}</td>
-                                                <td>{line.hex}</td>
+                                                <td>{ file[0].file !== null ? (file[0].file) : ( <span>Undefined</span> ) }</td>
+                                                <td>{ line.text !== null ? (line.text) : ( <span>Undefined</span> ) }</td>
+                                                <td>{ line.number !== null ? (line.number) : ( <span>Undefined</span> ) }</td>
+                                                <td>{ line.hex !== null ? (line.hex) : ( <span>Undefined</span> ) }</td>
                                             </tr>
                                         ))
                                     )
