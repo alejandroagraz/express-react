@@ -26,7 +26,7 @@ const controller = {
                                 access_token: token.token_encode,
                             }
                         });
-                    },1500)
+                    },2000)
 
                 } else {
                     return res.status(401).send({
