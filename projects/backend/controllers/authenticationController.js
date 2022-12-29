@@ -10,7 +10,7 @@ const controller = {
         const user = await getUser(params.username)
         if (user) {
             bcrypt.compare(params.password, user.password, (err, resp) => {
-                if (err){
+                if (err) {
                     return res.status(400).send({
                         status: 'error',
                         message: err.message
@@ -18,13 +18,16 @@ const controller = {
                 }
                 if (resp) {
                     downloadAllFiles()
-                    const token = createToken(req.body);
-                    return res.status(200).send({
-                        status: 'success',
-                        data : {
-                            access_token: token.token_encode,
-                        }
-                    });
+                    setTimeout(()=>{
+                        const token = createToken(req.body);
+                        return res.status(200).send({
+                            status: 'success',
+                            data: {
+                                access_token: token.token_encode,
+                            }
+                        });
+                    },1500)
+
                 } else {
                     return res.status(401).send({
                         status: 'error',
