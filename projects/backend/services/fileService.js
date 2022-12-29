@@ -2,7 +2,6 @@ const User = require('../models/user');
 const axios = require('axios');
 const fs = require("fs");
 const Global = require('../config/Global');
-
 const {API_EXT, API_EXT_TOKEN}= Global;
 
 exports.getUser = (username) => {
@@ -42,7 +41,8 @@ exports.downloadAllFiles = async  () => {
 
 exports.downloadFile = async (fileName) => {
     const uri = `${API_EXT}secret/file/${fileName}`;
-    const dirFile = `./temp/${fileName}`;
+    const dirFile = './temp';
+    fs.mkdirSync(dirFile, { recursive: true })
     const config = {
         headers: {
             Authorization: `Bearer ${API_EXT_TOKEN}`,
@@ -51,7 +51,7 @@ exports.downloadFile = async (fileName) => {
     };
     return  axios.get(uri, config)
     .then(async (res) => {
-        const file =  res.data.pipe( fs.createWriteStream(dirFile));
+        const file =  res.data.pipe( fs.createWriteStream(`${dirFile}/${fileName}`));
         return file.path
     })
     .catch((err) => {
@@ -61,7 +61,6 @@ exports.downloadFile = async (fileName) => {
 
 exports.formatDataFile = async (fileName) => {
     const dirFile = `./temp/${fileName}`;
-
     return new Promise((resolve, reject) => {
         fs.readFile(dirFile, 'utf-8', (err, data) => {
             if(err) {
