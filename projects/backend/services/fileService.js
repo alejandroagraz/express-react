@@ -13,6 +13,7 @@ exports.getUser = (username) => {
 
 exports.getListFiles = async () => {
     const dirFile = './temp';
+    fs.mkdirSync(dirFile, { recursive: true })
     const dataAllFiles = fs.readdirSync(dirFile);
     let resp = [];
     for (let i = 0; i < dataAllFiles.length; i++) {
